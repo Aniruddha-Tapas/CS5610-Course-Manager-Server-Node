@@ -36,10 +36,6 @@ app.get('/api/session/set/:name/:value',
     setSession);
 app.get('/api/session/get/:name',
     getSession);
-// app.get('/api/session/get',
-//   getSessionAll);
-// app.get('/api/session/reset',
-//   resetSession);
 
 function setSession(req, res) {
     const name = req.params['name'];
@@ -56,5 +52,7 @@ function getSession(req, res) {
 
 require('./services/user.service.server')(app);
 require('./services/section.service.server')(app);
+require('./services/quiz.service.server')(app);
+require('./services/question.service.server')(app);
 
 app.listen(process.env.PORT || 3000);
