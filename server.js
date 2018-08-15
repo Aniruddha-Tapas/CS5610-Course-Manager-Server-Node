@@ -6,12 +6,14 @@ mongoose.connect('mongodb://aniruddhastapas:mlabpassword2@ds117422.mlab.com:1742
 
 
 const app = express();
+// const ANGULAR_CLIENT_URL = "https://cs5610-whiteboard-client-ng.herokuapp.com";
+const ANGULAR_CLIENT_URL = "http://localhost:4200";
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
 app.use(function (req, res, next) {
-    res.header("Access-Control-Allow-Origin", "https://cs5610-whiteboard-client-ng.herokuapp.com");
+    res.header("Access-Control-Allow-Origin", ANGULAR_CLIENT_URL);
     res.header("Access-Control-Allow-Headers",
         "Origin, X-Requested-With, Content-Type, Accept");
     res.header("Access-Control-Allow-Methods",
