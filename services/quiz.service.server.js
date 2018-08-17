@@ -1,4 +1,8 @@
 module.exports = function (app) {
+
+    let quizModel = require('../models/quiz/quiz.model.server');
+    let submissionModel = require('../models/submission/submission.model.server');
+
     createQuiz = (req, res) => {
         let quiz = req.body;
         quizModel.createQuiz(quiz)
@@ -26,45 +30,25 @@ module.exports = function (app) {
             .then(status => res.send(status));
     };
 
-    addQuestion = (req, res) => {
-        quizModel.addQuestion(req.params.quizId, req.params.questionId)
-            .then(
-                status => res.send(status),
-                error => res.send(error)
-            )
-    };
-
-    createAnswers = questions => {
-        let answers = [];
-        questions.map(question => {
-            switch (question.questionType) {
-                case 'FILL_BLANKS':
-                    answers.push({fillBlanksAnswer: question.fillBlanksAnswer});
-                    break;
-                case 'TRUE_FALSE':
-                    answers.push({trueFalseAnswer: question.trueFalseAnswer});
-                    break;
-                case 'CHOICE':
-                    answers.push({multipleChoiceAnswer: question.multipleChoiceAnswer});
-                    break;
-                case 'ESSAY':
-                    answers.push({essayAnswer: question.essayAnswer});
-                    break;
-                default:
-                    return answers;
-            }
-        });
-        return answers;
-    };
-
     submitQuiz = (req, res) => {
         let quiz = req.body;
-        let answers = this.createAnswers(quiz.questions);
+        let quizId = req.body._id;
+        const current_user = req.session['currentUser'];
+        const userId = current_user._id;
+
+        let answers = req.body.questions;
+        for(let a = 0 ; a < answers.length; a++)
+        {
+            answers[a].question = answers[a]._id;
+        }
+
         let submission = {
-            student: req.session['currentUser']._id,
-            quiz: req.params.quizId,
-            answers: answers
+            student: userId,
+            quiz: quizId,
+            answers: answers,
+            timestamp: req.body.timestamp
         };
+        console.log(submission);
         submissionModel.submitQuiz(submission)
             .then(
                 status => res.send(status),
@@ -76,31 +60,37 @@ module.exports = function (app) {
         submissionModel.findAllSubmissions()
             .then(response => res.json(response));
 
-    findAllSubmissionsForStudent = (req, res) =>
-        submissionModel.findAllSubmissionsForStudent(req.session['currentUser']._id)
-            .then(response => res.json(response));
-
     findSubmissionById = (req, res) =>
         submissionModel.findSubmissionById(req.params.submissionId)
             .then(response => res.json(response));
 
+    findAllSubmissionsForStudent = (req, res) =>
+        submissionModel.findAllSubmissionsForStudent(req.session['currentUser']._id)
+            .then(response => res.json(response));
 
     findAllSubmissionsForQuiz = (req, res) =>
         submissionModel.findAllSubmissionsForQuiz(req.params.quizId)
             .then(response => res.json(response));
+
+
+    addQuestion = (req, res) => {
+        quizModel.addQuestion(req.params.quizId, req.params.questionId)
+            .then(
+                status => res.send(status),
+                error => res.send(error)
+            )
+    };
 
     app.post('/api/quiz', createQuiz);
     app.get('/api/quiz', findAllQuizzes);
     app.get('/api/quiz/:quizId', findQuizById);
     app.put('/api/quiz/:quizId', updateQuiz);
     app.delete('/api/quiz/:quizId', deleteQuiz);
-    app.put('/api/quiz/:quizId/question/:questionId', addQuestion);
     app.post('/api/quiz/:quizId/submission', submitQuiz);
-    app.get('/api/quiz/:quizId/submission', findAllSubmissionsForStudent);
-    app.get('/api/quiz/:quizId/submission/:submissionId', findSubmissionById);
+    app.get('/api/quiz/:quizId/submission', findAllSubmissionsForQuiz);
     app.get('/api/submission', findAllSubmissions);
-    app.get('/api/submission/:quizId', findAllSubmissionsForQuiz);
+    app.get('/api/quiz/:quizId/submission/:submissionId', findSubmissionById);
+    app.get('/api/quiz/:quizId/student/:sid/submission', findAllSubmissionsForStudent);
+    app.put('/api/quiz/:quizId/question/:questionId', addQuestion);
 
-    let quizModel = require('../models/quiz/quiz.model.server');
-    let submissionModel = require('../models/submission/submission.model.server');
 };

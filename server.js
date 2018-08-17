@@ -6,8 +6,8 @@ mongoose.connect('mongodb://aniruddhastapas:mlabpassword2@ds117422.mlab.com:1742
 
 
 const app = express();
-// const ANGULAR_CLIENT_URL = "https://cs5610-whiteboard-client-ng.herokuapp.com";
-const ANGULAR_CLIENT_URL = "http://localhost:4200";
+const ANGULAR_CLIENT_URL = "https://cs5610-whiteboard-client-ng.herokuapp.com";
+//const ANGULAR_CLIENT_URL = "http://localhost:4200";
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));

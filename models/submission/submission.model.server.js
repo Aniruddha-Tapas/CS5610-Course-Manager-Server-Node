@@ -10,22 +10,25 @@ findAllSubmissions = () =>
 
 findSubmissionById = id =>
     submissionModel.findById(id)
-        .populate({
-            path: 'quiz',
-            populate: {path: 'questions'}
-        })
+        .populate('answers')
+        .populate('answers.question')
+        .populate('student')
+        .populate('quiz')
         .exec();
 
 findAllSubmissionsForStudent = studentId =>
     submissionModel.find({student: studentId})
-        .populate({
-            path: 'quiz',
-            populate: {path: 'questions'}
-        })
+        .populate('answers')
+        .populate('student')
+        .populate('quiz')
         .exec();
 
 findAllSubmissionsForQuiz = quizId =>
-    submissionModel.find({quiz: quizId});
+    submissionModel.find({quiz: quizId})
+        .populate('answers')
+        .populate('student')
+        .populate('quiz')
+        .exec();
 
 let api = {
     submitQuiz,

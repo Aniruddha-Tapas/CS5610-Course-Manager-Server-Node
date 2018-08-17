@@ -8,14 +8,20 @@ createQuestion = question =>
 findAllQuestions = () =>
     questionModel.find();
 
-findQuestionById = qId =>
-    questionModel.findById(qId);
+findQuestionById = quesId =>
+    questionModel.findById(quesId);
+
+updateQuestion = (quesId, question) =>
+    questionModel.update({_id: quesId},
+        {
+            $set: question
+        })
 
 let api = {
     createQuestion,
     findAllQuestions,
     findQuestionById,
-
+    updateQuestion
 };
 
 module.exports = api;

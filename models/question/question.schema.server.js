@@ -8,6 +8,8 @@ module.exports = mongoose.Schema({
         value: String,
         correct: Boolean
     }],
+    blanks: [],
+    true: Boolean,
     questionType: {
         type: String,
         enum: [

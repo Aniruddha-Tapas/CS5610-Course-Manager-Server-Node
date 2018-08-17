@@ -10,13 +10,14 @@ let submissionSchema = mongoose.Schema({
     },
     answers: [{
         multipleChoiceAnswer: Number,
-        fillBlanksAnswer: Object,
+        fillBlanksAnswer: [],
         trueFalseAnswer: Boolean,
         essayAnswer: String,
         question: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'QuestionModel'
         }
-    }]
+    }],
+    timestamp: Date
 }, {collection: 'submission'});
 module.exports = submissionSchema;

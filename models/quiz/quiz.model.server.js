@@ -9,7 +9,7 @@ findAllQuizzes = () =>
     quizModel.find();
 
 findQuizById = quizId =>
-    quizModel.findById(quizId)
+    quizModel.find({_id: quizId})
         .populate('questions')
         .exec();
 
